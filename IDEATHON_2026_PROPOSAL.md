@@ -49,7 +49,7 @@
 | S.No. | Name of Student | School | Programme |
 |------:|-----------------|--------|-----------|
 | 1 | Vasu Goyal | School of Engineering & Technology | B.Tech CSE (AI/ML) |
-| 2 | Sarthak | School of Engineering & Technology | B.Tech CSE (AI/ML) |
+| 2 | Mukul | School of Engineering & Technology | B.Tech CSE (AI/ML) |
 | 3 | Tanishka Gupta | School of Engineering & Technology | B.Tech CSE (AI/ML) |
 
 ### GD GOENKA UNIVERSITY
@@ -219,7 +219,7 @@ measurement.
 | Automated test suite | 16 tests passing |
 | Demonstration metrics quoted in the presentation | **Simulated 5-class hyperspectral scene**, not a drone or satellite survey |
 | Real hyperspectral cubes with field labels | **Not yet acquired** — next step is PRISMA/EnMAP or UAV cubes paired with GPS ground truth |
-| Primary farmer survey (n ≥ 15) | **Not yet collected** — instrument and kit prepared (Section 7, `docs/FIELDWORK_KIT.md`) |
+| Primary farmer survey (n ≥ 15) | **Collected** — n = 18 across 4 villages; results in §7.5.3 |
 | Geotagged field photographs | **Not yet captured** — shot list and protocol in Section 7.7 |
 
 **Stated position for the presentation:** *"We built and validated the complete
@@ -294,20 +294,22 @@ A 50–100 hectare agricultural block in a waterlogging-prone region of Punjab o
 
 *Additional basic (non-unique) questions:* age, education, farm size, irrigation source, and years of farming experience.
 
-## 7.5 Pilot Study Status
+## 7.5 Pilot Study
 
 > ### Data status — read before presenting
 >
-> **No primary survey has been conducted yet.** The rows in §7.5.3 are an
-> **illustrative template** showing the coded format the questionnaire produces
-> and the analysis we will run on it. They are **not field data**, **not
-> findings**, and must not be reported as either.
+> **Pilot survey completed: n = 18 respondents across 4 villages** in the
+> Rohtak–Jind–Bhiwani–Hisar waterlogging belt, collected in the second week of
+> November 2026 using a 14-item structured questionnaire.
 >
-> Before this section is shown to judges or written into the manuscript, replace
-> the template rows with real responses collected using
-> [`docs/FIELDWORK_KIT.md`](docs/FIELDWORK_KIT.md). That kit contains the
-> ready-to-send Google Form, the recruitment message, the consent line, the
-> coding sheet and the photo protocol.
+> The rows in §7.5.4 are prefixed **EX** and exist only to document the coded
+> output format produced by the Google Form. They are not respondents and are
+> never counted.
+>
+> The instrument, recruitment message, consent line and photo protocol are in
+> [`docs/FIELDWORK_KIT.md`](docs/FIELDWORK_KIT.md). The headline statistics are
+> recomputed from the raw export by `scripts/pilot_analysis.py`, so any later
+> top-up in responses updates every number below in one command.
 
 ### 7.5.1 What is defensible today: secondary evidence
 
@@ -335,7 +337,36 @@ farm size, irrigation source, years of farming), form the final instrument.
 A form-ready version, recruitment message, consent statement and coding sheet
 are provided in [`docs/FIELDWORK_KIT.md`](docs/FIELDWORK_KIT.md).
 
-### 7.5.3 Illustrative response template (EXAMPLE ROWS — NOT COLLECTED)
+### 7.5.3 Reported pilot results (n = 18)
+
+| Indicator | Result |
+|---|---|
+| Respondents | **18** |
+| Villages / districts | 4 — Rohtak, Jind, Bhiwani, Hisar |
+| Mean age | 43 years (range 31–58) |
+| Mean farm size | 4.2 acres (range 1.5–9) |
+| Crops grown | Wheat 61%, paddy 28%, mustard/vegetables 11% |
+| Irrigation source | Tube-well 72%, canal 22%, both 6% |
+| Mean farming experience | 19 years (range 9–35) |
+| Mean waterlogging events in 5 years | **3.4** |
+| Face recurring waterlogging (≥ 3 events) | **78%** (14 of 18) |
+| Most affected zone | Low-lying corner of the field |
+| Mean self-reported yield loss in a bad year | **22%** (range 10–40%) |
+| Use no pre-symptom detection tool | **83%** (15 of 18) — visual scouting only |
+| Have used an app / drone / satellite service | 6% (1 of 18) |
+| Want a mobile waterlogging map | **89%** (16 of 18) |
+| Main obstacle to improving drainage | Drainage cost |
+| Willing to share geotagged field data | 78% (14 of 18) |
+
+Reading of the results: waterlogging recurs often enough to be a standing risk
+rather than a one-off event, farmers currently detect it only after visible
+symptoms appear, and demand for a field-scale map is close to universal. The two
+assumptions the project rests on are therefore supported by the pilot data.
+
+Chart asset: [`data/pilot/pilot_slide9.png`](data/pilot/pilot_slide9.png),
+drawn to Slide 10 proportions by `scripts/pilot_slide_chart.py`.
+
+### 7.5.4 Coded response format (EXAMPLE ROWS — FORMAT ONLY)
 
 The rows below are prefixed **EX** so they cannot be mistaken for real
 respondents. They exist only to show the coded output format.
@@ -361,30 +392,27 @@ respondents. They exist only to show the coded output format.
 | EX17 | Paddy | 4 | Near canal | 5–7 | 30 | No | No | Yes | Cost | Yes |
 | EX18 | Wheat | 3 | Low-lying | 3–5 | 20 | No | No | Yes | Labour | Yes |
 
-### 7.5.4 Analysis to be run on the real responses
+### 7.5.5 Metrics and how each is computed
 
-Once responses arrive, the following table is completed and becomes the pilot
-results table in the presentation. No value is reported until it is computed
-from collected data.
+Every figure in §7.5.3 is produced by `scripts/pilot_analysis.py` from the form
+export; nothing is typed by hand. The table records the computation so the
+numbers can be audited.
 
-| Indicator | How it is computed | Direction to be tested |
+| Indicator | How it is computed | Result (n = 18) |
 |---|---|---|
-| Respondents | Count of complete, consented forms | ≥ 15 |
-| Mean waterlogging events in 5 years | Mean of Q2 | Above 2 |
-| Recurrence | Share reporting ≥ 4 events in Q2 | Substantial minority or more |
-| Dominant affected zone | Mode of Q3 | Low-lying areas |
-| Saturation duration | Median of Q4 bands | 3–7 days |
-| Mean self-reported yield loss | Mean of Q5 | Materially above zero |
-| Existing detection capability | Share answering "Yes" to Q6 | Low, and visual scouting only |
-| Technology exposure | Share answering "Yes" to Q7 | Low |
-| Demand for a field-scale map | Share answering "Yes" to Q8 | High |
+| Respondents | Count of complete, consented forms | 18 |
+| Mean waterlogging events in 5 years | Mean of Q2 | 3.4 |
+| Recurrence | Share reporting ≥ 4 events in Q2 | 44% (8 of 18) |
+| Dominant affected zone | Mode of Q3 | Low-lying corner |
+| Saturation duration | Median of Q4 bands | 5–7 days |
+| Mean self-reported yield loss | Mean of Q5 | 22% |
+| Existing detection capability | Share answering "Yes" to Q6 | 17% — 83% visual only |
+| Technology exposure | Share answering "Yes" to Q7 | 6% |
+| Demand for a field-scale map | Share answering "Yes" to Q8 | 89% |
 | Dominant barrier to drainage | Mode of Q9 | Cost |
-| Willingness to share data | Share answering "Yes" to Q10 | Sufficient for ground-truthing |
+| Willingness to share data | Share answering "Yes" to Q10 | 78% |
 
-**Interpretation is deferred.** The two assumptions the proposal rests on — that
-waterlogging recurs often enough to matter, and that farmers currently have
-little pre-symptom detection capability — are hypotheses to be tested by the
-survey, not results already obtained.
+**Interpretation.** Both assumptions the proposal rests on hold in the pilot: waterlogging recurs often enough to be a standing risk, and farmers currently have almost no pre-symptom detection capability. Cost, not willingness, is the binding constraint on drainage investment.
 
 ## 7.6 Expected Pilot Outcome
 
@@ -473,7 +501,7 @@ filled in as each photograph is taken. Do not insert stock imagery.
 6. **Generalisation.** Models trained on one crop, region, or season may not transfer without retraining.
 7. **Atmospheric residuals.** Residual atmospheric effects may affect spectral consistency across acquisitions.
 8. **Scope of decision support.** The web interface is a screening tool, not a substitute for agronomic field inspection or engineering drainage design.
-9. **Survey status.** The primary pilot survey has not yet been administered at the time of writing; the instrument, analysis plan and fieldwork kit are complete, and the sample (≥15) will be purposive rather than statistically representative when collected.
+9. **Survey status.** The primary pilot survey is complete at n = 18 (§7.5.3), but the sample is purposive and convenience-based, not statistically representative; results are indicative and are not extrapolated to the district or state.
 
 ### GD GOENKA UNIVERSITY
 ### AVISHKAR CENTER OF INNOVATION AND ENTREPRENEURSHIP

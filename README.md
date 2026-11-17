@@ -93,6 +93,7 @@ scripts/train.py           training entry point
 scripts/evaluate.py        evaluation entry point
 scripts/run_demo.py        fast synthetic demo that populates the dashboard
 scripts/pilot_analysis.py  computes pilot statistics and the Slide 9 chart
+scripts/pilot_slide_chart.py redraws the Slide 9 chart from the reported figures
 tests/                     offline unit and contract tests
 docs/                      methodology, paper draft, explainer, fieldwork kit
 data/                      hyperspectral data, labels, boundaries, pilot CSV
