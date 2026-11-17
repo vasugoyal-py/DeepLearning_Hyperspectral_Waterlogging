@@ -91,6 +91,43 @@ python ui/app.py        # development server on http://127.0.0.1:5000
 
 ---
 
+## Option D — GitHub Pages (static snapshot only)
+
+GitHub Pages serves **static files**, so it cannot run the Flask app. It *can*
+host a frozen snapshot, which is enough for a PPT link.
+
+```bash
+python scripts/export_static.py          # writes site/index.html + site/assets/
+python -m http.server 8000 --directory site   # preview at http://127.0.0.1:8000
+```
+
+To publish:
+
+```bash
+git init
+git add .
+git commit -m "DeepWaterLog dashboard snapshot"
+git branch -M main
+git remote add origin https://github.com/<your-username>/<repo>.git
+git push -u origin main
+```
+
+Then in the repository: **Settings → Pages → Build and deployment → Source =
+GitHub Actions**. The workflow in `.github/workflows/pages.yml` rebuilds `site/`
+on every push to `main` and publishes it to
+`https://<your-username>.github.io/<repo>/`.
+
+| | GitHub Pages | Hugging Face Spaces |
+|---|---|---|
+| Runs the Flask API | No | Yes |
+| Report export button | No | Yes |
+| Setup | GitHub account + repo | HF account + upload |
+| Best for | PPT link, archival snapshot | Live demo |
+
+Use both if you like: Pages for the link in the deck, Spaces for the live demo.
+
+---
+
 ## What to put on the slide
 
 > **Live demo:** `<space-url>`

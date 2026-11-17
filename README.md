@@ -59,10 +59,11 @@ uv run python ui/app.py
 
 | Document | Contents |
 |---|---|
-| [`IDEATHON_2026_PROPOSAL.md`](IDEATHON_2026_PROPOSAL.md) | **IDEATHON 2026 submission document** in the required GD Goenka / Avishkar Centre format: introduction with citations, 29-reference literature review, research gap, objectives, methodology, hypothesis, pilot instrument with secondary evidence and a one-day collection kit, SDG contribution, limitations, APA 7th references |
+| [`IDEATHON_2026_PROPOSAL.md`](IDEATHON_2026_PROPOSAL.md) | **IDEATHON 2026 submission document** in the required GD Goenka / Avishkar Centre format: introduction with citations, 31-reference literature review, research gap, objectives, methodology, hypothesis, pilot instrument with secondary evidence and a one-day collection kit, SDG contribution, limitations, APA 7th references |
 | [`docs/README.md`](docs/README.md) | Documentation index, pipeline table and scientific contract |
 | [`docs/WHAT_AND_WHY.md`](docs/WHAT_AND_WHY.md) | **Plain-language explainer** — what the project does, why it matters, how the six stages work, what is real today, and likely judge questions |
 | [`docs/FIELDWORK_KIT.md`](docs/FIELDWORK_KIT.md) | One-day pilot survey kit: Google Form, consent, WhatsApp message, photo protocol, Slide 9 template |
+| [`docs/PPT_CONTENT_FILLED.md`](docs/PPT_CONTENT_FILLED.md) | All 16 slides written out with cited numbers and a pre-submission checklist |
 | [`deploy/HOSTING.md`](deploy/HOSTING.md) | Free hosting for the dashboard (Hugging Face Spaces or Render) |
 | [`docs/RESEARCH_METHODOLOGY.md`](docs/RESEARCH_METHODOLOGY.md) | Literature review, research gap, objectives, methodology, hypothesis, pilot study, contribution, limitations, references (APA 7th) |
 | [`docs/PAPER_DRAFT.md`](docs/PAPER_DRAFT.md) | Manuscript skeleton for a journal/conference paper |
@@ -116,6 +117,12 @@ minutes on Hugging Face Spaces or Render — no card required. Full steps:
 
 ```bash
 python wsgi.py     # same production entry point the container uses
+```
+
+GitHub Pages cannot run Flask, so it hosts a frozen snapshot instead:
+
+```bash
+python scripts/export_static.py    # writes site/index.html + site/assets/
 ```
 
 ## Scientific status

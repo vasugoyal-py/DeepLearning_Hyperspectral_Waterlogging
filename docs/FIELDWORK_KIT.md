@@ -156,6 +156,36 @@ This writes:
 The script refuses to run if fewer than 15 valid responses are present, so an
 under-filled sheet cannot accidentally become a slide.
 
+### Slide 9 field mapping
+
+Each slide cell maps to exactly one form question. Fill it from
+`pilot_summary.md`; do not type a number by hand.
+
+| Slide label | Question | Reported as |
+|---|---|---|
+| Age | A1 | Mean ± range, years |
+| Farm size | A3 | Mean, acres |
+| Crop grown | A4 / B1 | Distribution, % per crop |
+| Irrigation source | A5 | Distribution, % per source |
+| Years of farming | A6 | Mean, years |
+| Waterlogging frequency | B2 | Mean events in 5 years + share with ≥3 |
+| Most affected field zone | B3 | Mode, with counts |
+| Days of saturation | B4 | Distribution across bands |
+| % yield loss | B5 | Mean, % |
+| Pre-symptom detection method | B6 | Distribution, % per method |
+| App / drone usage | B7 | % Yes |
+| Willingness to use a phone map | B8 | % Yes / Maybe / No |
+| Drainage obstacles | B9 | Distribution, % per barrier |
+| Consent to share geotagged data | B10 | % Yes |
+| `__% face recurring waterlogging` | B2 | Share with ≥3 events in 5 years |
+| `__% average yield loss` | B5 | Mean of reported loss |
+| `__% use no pre-symptom tool` | B6 | Share answering "No" |
+| `__% want mobile waterlogging maps` | B8 | Share answering "Yes" |
+| Chart `(n = __)` | all | Valid, consented responses only |
+
+All of these are produced by `scripts/pilot_analysis.py` from the CSV; the script
+prints the four headline percentages directly.
+
 ### Slide 9 fill-in template
 
 ```text

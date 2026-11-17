@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeepWaterLog - Agricultural Waterlogging Detection</title>
+<style>
+  :root {
+    --ink: #10263b; --muted: #5b7288; --line: #dfe7ee;
+    --bg: #f4f7fa; --card: #ffffff;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg); color: var(--ink); line-height: 1.5;
+    padding: 24px; max-width: 1280px; margin: 0 auto;
+  }
+  header { margin-bottom: 18px; }
+  h1 { font-size: 24px; letter-spacing: -0.3px; }
+  .sub { color: var(--muted); font-size: 13px; margin-top: 4px; }
+  .theme-pill {
+    display: inline-block; margin-top: 8px; padding: 3px 10px;
+    background: #e6f2ec; color: #1f6b4a; border-radius: 20px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.4px;
+    text-transform: uppercase;
+  }
+  .notice {
+    margin-top: 14px; background: #fff8e6; border: 1px solid #f1d9a0;
+    color: #7a5a12; border-radius: 8px; padding: 10px 12px; font-size: 12px;
+  }
+  .grid { display: grid; gap: 14px; }
+  .kpis { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+  .card {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 10px; padding: 16px;
+  }
+  .kpi-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.7px;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .kpi-value {
+    font-size: 26px; font-weight: 700; margin-top: 6px;
+    font-variant-numeric: tabular-nums;
+  }
+  .kpi-unit { font-size: 12px; font-weight: 600; color: var(--muted); }
+  h2 {
+    font-size: 13px; text-transform: uppercase; letter-spacing: 0.7px;
+    color: var(--muted); margin: 26px 0 10px;
+  }
+  .two-col { grid-template-columns: 1fr 1fr; }
+  @media (max-width: 860px) { .two-col { grid-template-columns: 1fr; } }
+  .map-img {
+    width: 100%; display: block; border-radius: 6px;
+    image-rendering: pixelated; background: #eef2f6;
+  }
+  .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+  .swatch { width: 12px; height: 12px; border-radius: 3px; flex: 0 0 auto; }
+  .swatch.inline { display: inline-block; margin-right: 7px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--line); }
+  th {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.6px;
+    color: var(--muted);
+  }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .bar-cell { width: 30%; }
+  .bar-track { background: #eef2f6; border-radius: 4px; height: 8px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 4px; }
+  .empty { color: var(--muted); font-size: 14px; }
+  code {
+    background: #eef2f6; padding: 2px 6px; border-radius: 4px;
+    font-size: 12px; font-family: ui-monospace, Menlo, Consolas, monospace;
+  }
+  .warn ul { margin-left: 18px; }
+  .pill {
+    display: inline-block; padding: 1px 8px; border-radius: 10px;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.4px;
+  }
+  .pill-ok { background: #e6f2ec; color: #1f6b4a; }
+  .footer {
+    margin-top: 30px; color: var(--muted); font-size: 11px;
+    text-align: center; line-height: 1.7;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>DeepWaterLog</h1>
+  <div class="sub">
+    Deep Learning-Enabled Hyperspectral Remote Sensing for
+    Agricultural Waterlogging Detection
+  </div>
+  <span class="theme-pill">Smart AgriTech - Precision Farming and Agro Sustainability</span>
+  <div class="notice">
+    <strong>Static snapshot.</strong> This page is a frozen export of the dashboard
+    for GitHub Pages. The interactive version runs as a Flask service.
+    Demonstration metrics come from a <strong>simulated five-class hyperspectral
+    scene</strong>, not a drone or satellite survey.
+  </div>
+</header>
+
+<div class="grid kpis">
+<div class="card"><div class="kpi-label">U-Net accuracy</div><div class="kpi-value">0.9234</div></div><div class="card"><div class="kpi-label">U-Net F1 (macro)</div><div class="kpi-value">0.7868</div></div><div class="card"><div class="kpi-label">U-Net IoU (macro)</div><div class="kpi-value">0.7180</div></div><div class="card"><div class="kpi-label">CNN F1 (macro)</div><div class="kpi-value">0.2882</div></div><div class="card"><div class="kpi-label">Waterlogged area</div><div class="kpi-value">10.01<span class="kpi-unit">ha</span></div></div><div class="card"><div class="kpi-label">Waterlogged share</div><div class="kpi-value">10.9%</div></div>
+</div>
+
+<h2>Run provenance</h2>
+<div class="card">
+  <table>
+    <tr><th style="width:180px">Run ID</th><td><code>demo_lowland_paddy_20261117T090836Z</code></td></tr>
+    <tr><th>Scenario</th><td>demo_lowland_paddy</td></tr>
+    <tr><th>Status</th><td><span class="pill pill-ok">OK</span></td></tr>
+    <tr><th>Device</th><td>cpu</td></tr>
+    <tr><th>Processing time</th><td>35.0 s</td></tr>
+    <tr><th>Bands</th><td>32 raw &rarr; 32 after selection (none)</td></tr>
+    <tr><th>Patches</th><td>121 (train 84 / val 17 / test 20)</td></tr>
+  </table>
+</div>
+
+<h2>Waterlogging map</h2>
+<div class="grid two-col">
+  <div class="card">
+    <div class="kpi-label">Classified extent</div>
+    <img class="map-img" src="assets/demo_lowland_paddy_20261117T090836Z_map.png" alt="Classified waterlogging map">
+    <div class="legend"><div class="legend-item"><span class="swatch" style="background:#d62828" ></span><span>Waterlogged soil</span></div><div class="legend-item"><span class="swatch" style="background:#40916c" ></span><span>Healthy crop</span></div><div class="legend-item"><span class="swatch" style="background:#f4a261" ></span><span>Stressed crop</span></div><div class="legend-item"><span class="swatch" style="background:#2a6fb7" ></span><span>Open water</span></div><div class="legend-item"><span class="swatch" style="background:#969696" ></span><span>Non-agricultural</span></div></div>
+  </div>
+  <div class="card">
+    <div class="kpi-label">Waterlogging severity (P(waterlogged soil) + P(stressed crop))</div>
+    <img class="map-img" src="assets/demo_lowland_paddy_20261117T090836Z_severity.png" alt="Waterlogging severity map">
+    <div class="legend">
+      <div class="legend-item"><span class="swatch" style="background:#ffeda0"></span><span>low</span></div>
+      <div class="legend-item"><span class="swatch" style="background:#d62828"></span><span>high</span></div>
+    </div>
+  </div>
+</div>
+
+<h2>Per-class breakdown</h2>
+<div class="card">
+  <table>
+    <thead><tr>
+      <th>Class</th><th class="num">Pixels</th><th class="num">Area (ha)</th>
+      <th>Share</th><th class="num">%</th>
+    </tr></thead>
+    <tbody>
+<tr><td><span class="swatch inline" style="background:#d62828"></span>Waterlogged soil</td><td class="num">719</td><td class="num">7.19</td><td class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:7.8%;background:#d62828"></div></div></td><td class="num">7.8%</td></tr>
+<tr><td><span class="swatch inline" style="background:#40916c"></span>Healthy crop</td><td class="num">7,223</td><td class="num">72.23</td><td class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:78.4%;background:#40916c"></div></div></td><td class="num">78.4%</td></tr>
+<tr><td><span class="swatch inline" style="background:#f4a261"></span>Stressed crop</td><td class="num">282</td><td class="num">2.82</td><td class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:3.1%;background:#f4a261"></div></div></td><td class="num">3.1%</td></tr>
+<tr><td><span class="swatch inline" style="background:#2a6fb7"></span>Open water</td><td class="num">224</td><td class="num">2.24</td><td class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:2.4%;background:#2a6fb7"></div></div></td><td class="num">2.4%</td></tr>
+<tr><td><span class="swatch inline" style="background:#969696"></span>Non-agricultural</td><td class="num">768</td><td class="num">7.68</td><td class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:8.3%;background:#969696"></div></div></td><td class="num">8.3%</td></tr>
+    </tbody>
+  </table>
+  <p class="sub" style="margin-top:8px">
+    Total mapped area 92.16 ha at
+    10 m resolution. Waterlogged classes are
+    <strong>waterlogged soil</strong> and <strong>stressed crop</strong>.
+  </p>
+</div>
+
+<h2>Evaluation detail</h2>
+<div class="card">
+  <table>
+    <thead><tr><th>Model</th><th class="num">Accuracy</th><th class="num">Precision</th>
+      <th class="num">Recall</th><th class="num">F1</th><th class="num">IoU</th></tr></thead>
+    <tbody>
+      <tr><td>CNN (patch classification)</td>
+        <td class="num">0.8500</td>
+        <td class="num">0.2778</td>
+        <td class="num">0.3000</td>
+        <td class="num">0.2882</td>
+        <td class="num">&mdash;</td></tr>
+      <tr><td>U-Net (pixel segmentation)</td>
+        <td class="num">0.9234</td>
+        <td class="num">0.8777</td>
+        <td class="num">0.8265</td>
+        <td class="num">0.7868</td>
+        <td class="num">0.7180</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h2>Warnings</h2><div class="warn"><ul><li>Class non_agricultural (4) has only 0 patches (0.00%); consider rebalancing.</li></ul></div>
+
+<div class="footer">
+  DeepWaterLog v1.0.0 &middot;
+  snapshot generated 2026-11-17 15:19 UTC &middot;
+  results are screening output, not a substitute for field inspection
+</div>
+
+</body>
+</html>

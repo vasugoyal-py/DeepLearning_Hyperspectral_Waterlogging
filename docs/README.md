@@ -12,11 +12,12 @@ IoU, and produces georeferenced waterlogging maps for decision support.
 
 | Document | Purpose |
 |---|---|
-| [`../IDEATHON_2026_PROPOSAL.md`](../IDEATHON_2026_PROPOSAL.md) | IDEATHON 2026 submission format: introduction, literature review (29 APA references), research gap, objectives, methodology, hypothesis, pilot instrument and collection plan, SDG contribution, limitations, references |
+| [`../IDEATHON_2026_PROPOSAL.md`](../IDEATHON_2026_PROPOSAL.md) | IDEATHON 2026 submission format: introduction, literature review (31 APA references), research gap, objectives, methodology, hypothesis, pilot instrument and collection plan, SDG contribution, limitations, references |
 | [`RESEARCH_METHODOLOGY.md`](RESEARCH_METHODOLOGY.md) | Full methodology note: literature review, gap, objectives, six-stage method, hypothesis, pilot fieldwork design, contribution, limitations and APA 7th references. Source for a thesis or manuscript Methods section |
 | [`PAPER_DRAFT.md`](PAPER_DRAFT.md) | Manuscript skeleton with abstract, introduction, literature review, methodology, pilot design, contribution, limitations and references. Experimental numbers are placeholders until models are trained on pilot data |
 | [`WHAT_AND_WHY.md`](WHAT_AND_WHY.md) | Plain-language explainer: the problem, why hyperspectral, why deep learning, the six stages, honest status, beneficiaries, SDGs, likely judge questions and a glossary |
 | [`FIELDWORK_KIT.md`](FIELDWORK_KIT.md) | One-day kit to collect the primary survey honestly: Google Form questions, consent text, WhatsApp recruitment message, photo protocol, Slide 9 template and the analysis command |
+| [`PPT_CONTENT_FILLED.md`](PPT_CONTENT_FILLED.md) | All 16 presentation slides written out, with cited numbers, speaker notes and a pre-submission checklist |
 | [`../README.md`](../README.md) | Project overview, quick start and repository layout |
 | [`../PROJECT_EXPLANATION.txt`](../PROJECT_EXPLANATION.txt) | Short plain-language summary for non-specialist readers |
 
@@ -66,10 +67,18 @@ area breakdown and a Markdown report export.
 
 The dashboard needs only Flask, NumPy and Pillow — not PyTorch — so it deploys in
 about two minutes. See [`../deploy/HOSTING.md`](../deploy/HOSTING.md) for
-Hugging Face Spaces (no card required) and Render. Verify a deployment with:
+Hugging Face Spaces (no card required), Render, and GitHub Pages. Verify a
+deployment with:
 
 ```bash
 curl https://<your-space>.hf.space/healthz
+```
+
+GitHub Pages cannot run Flask, so it hosts a frozen snapshot instead:
+
+```bash
+python scripts/export_static.py
+# site/index.html + site/assets/ are published by .github/workflows/pages.yml
 ```
 
 ### Collect the pilot survey

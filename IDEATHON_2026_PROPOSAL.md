@@ -27,7 +27,7 @@
 |---|---|
 | — | Researchers / Students |
 | 1 | Introduction |
-| 2 | Literature Review (29 references, ≥5 post-2015, no Wikipedia) |
+| 2 | Literature Review (31 references, ≥5 post-2015, no Wikipedia) |
 | 3 | Research Gap |
 | 4 | Objectives |
 | 5 | Research Methodology |
@@ -316,6 +316,7 @@ our own fieldwork. Every claim below is citable and verifiable.
 
 | Claim used in this proposal | Supporting source | Why it matters here |
 |---|---|---|
+| Waterlogging and salinity affect ≈0.45 million ha of Haryana (≈10% of the state) and ≈14.3 million ha of India | Grewal et al. (2023); Datta and de Jong (2002) | Establishes that the study region has a documented, quantified problem rather than an anecdotal one |
 | Extreme-rainfall events are intensifying, raising the frequency of soil-saturation episodes | IPCC (2022) | Frames waterlogging as a growing, climate-linked risk rather than a one-off event |
 | Crop water status is detectable from reflectance in the 950–970 nm region | Peñuelas et al. (1993); Sims & Gamon (2003) | Justifies the specific spectral bands the pipeline selects |
 | Deep learning consistently outperforms classical classifiers on hyperspectral data | Audebert et al. (2019); Zhang et al. (2016) | Justifies CNN/U-Net over vegetation-index thresholds |
@@ -486,11 +487,15 @@ filled in as each photograph is taken. Do not insert stock imagery.
 
 Audebert, N., Le Saux, B., & Lefèvre, S. (2019). Deep learning for classification of hyperspectral data: A comparative review. *IEEE Geoscience and Remote Sensing Magazine, 7*(2), 159–173.
 
+Datta, K. K., & de Jong, C. (2002). Adverse effect of waterlogging and soil salinity on crop and land productivity in northwest region of Haryana, India. *Agricultural Water Management, 57*(3), 223–238.
+
 Food and Agriculture Organization of the United Nations. (2021). *The state of food and agriculture 2021: Making agrifood systems more resilient to shocks and stresses*. FAO.
 
 Gao, B. C. (1996). NDWI—A normalized difference water index for remote sensing of vegetation liquid water from space. *Remote Sensing of Environment, 58*(3), 257–266.
 
 Goetz, A. F. H. (2009). Three decades of hyperspectral remote sensing of the Earth: A personal view. *Remote Sensing of Environment, 113*, S5–S16.
+
+Grewal, S. S., Lohan, H. S., & Dagar, J. C. (2023). Potential agricultural practices in saline waterlogged areas of Haryana and their impact on socio-economic conditions of farmers – A synthesis. *Journal of Soil Salinity and Water Quality, 13*(1), 109–133. https://epubs.icar.org.in/index.php/JoSSWQ/article/view/140125
 
 He, K., Zhang, X., Ren, S., & Sun, J. (2016). Deep residual learning for image recognition. In *Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition* (pp. 770–778).
 
