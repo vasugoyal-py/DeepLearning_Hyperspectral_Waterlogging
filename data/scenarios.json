@@ -1,0 +1,53 @@
+{
+  "description": "Waterlogging scenario database for DeepWaterLog. Each scenario stores hyperspectral acquisition windows, region, crop type, and label-source metadata.",
+  "scenarios": [
+    {
+      "id": "punjab_paddy_2024",
+      "name": "Punjab paddy monsoon waterlogging",
+      "region": "Punjab, India",
+      "country": "India",
+      "crop": "paddy (rice)",
+      "season": "kharif / monsoon",
+      "bbox": [74.5, 30.0, 76.5, 31.5],
+      "acquisition_window": ["2024-07-15", "2024-08-15"],
+      "label_source": "pilot_fieldwork_2024",
+      "waterlogging_history": "recurrent post-irrigation and monsoon waterlogging"
+    },
+    {
+      "id": "haryana_wheat_2024",
+      "name": "Haryana wheat post-irrigation waterlogging",
+      "region": "Haryana, India",
+      "country": "India",
+      "crop": "wheat",
+      "season": "rabi / winter",
+      "bbox": [76.0, 28.5, 77.5, 30.0],
+      "acquisition_window": ["2024-01-10", "2024-02-10"],
+      "label_source": "pilot_fieldwork_2024",
+      "waterlogging_history": "poor drainage after canal irrigation"
+    },
+    {
+      "id": "up_maize_2024",
+      "name": "Uttar Pradesh maize kharif waterlogging",
+      "region": "Uttar Pradesh, India",
+      "country": "India",
+      "crop": "maize",
+      "season": "kharif / monsoon",
+      "bbox": [80.5, 26.0, 82.5, 27.5],
+      "acquisition_window": ["2024-07-01", "2024-08-31"],
+      "label_source": "pilot_fieldwork_2024",
+      "waterlogging_history": "flash flooding and poor field drainage"
+    },
+    {
+      "id": "gujarat_vegetable_2024",
+      "name": "Gujarat vegetable crop waterlogging",
+      "region": "Gujarat, India",
+      "country": "India",
+      "crop": "mixed vegetables",
+      "season": "summer",
+      "bbox": [72.0, 22.0, 73.5, 23.5],
+      "acquisition_window": ["2024-04-01", "2024-05-31"],
+      "label_source": "pilot_fieldwork_2024",
+      "waterlogging_history": "over-irrigation in drip-irrigated vegetable blocks"
+    }
+  ]
+}

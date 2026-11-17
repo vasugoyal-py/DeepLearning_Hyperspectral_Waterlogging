@@ -1,0 +1,36 @@
+do_not_commit/
+tree/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+.vscode/
+
+# Testing and tooling
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Local configuration
+.env
+.env.*
+!.env.example
+
+# Generated research artefacts
+data/results/*
+!data/results/.gitkeep
+data/logs/
+Example papers/_extracted/
+
+# OS files
+.DS_Store
+Thumbs.db
+PROJECT_EXPLANATION.txt
+Example papers/
+to_imporove.md
