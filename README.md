@@ -53,7 +53,15 @@ uv run python scripts/evaluate.py --data data/testing/scene.npz --model both
 
 # Launch decision-support UI
 uv run python ui/app.py
+
+# Generate a bounded directory tree and text-file snapshot
+uv run python tree.py
 ```
+
+`tree.py` writes `tree_str` (the directory structure) and `tree.txt`
+(readable text-file contents). It skips Git/virtual-environment/cache folders,
+binary or oversized files, generated outputs, and directories deeper than six
+levels by default. Use `--max-depth N` to change the depth limit.
 
 ## Documentation
 

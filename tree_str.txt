@@ -1,0 +1,96 @@
+DeepLearning_Hyperspectral_Waterlogging
+├── .github
+│   └── workflows
+│   │   └── pages.yml
+├── core
+│   ├── __init__.py
+│   ├── band_selection.py
+│   ├── cnn_model.py
+│   ├── dataset.py
+│   ├── evaluator.py
+│   ├── mapper.py
+│   ├── pipeline.py
+│   ├── preprocessing.py
+│   ├── reporting.py
+│   ├── trainer.py
+│   └── unet_model.py
+├── data
+│   ├── boundaries
+│   │   ├── waterlogging
+│   │   ├── README.md
+│   │   └── TEMPLATES_README.md
+│   ├── hyperspectral
+│   ├── labels
+│   ├── logs
+│   ├── models
+│   │   ├── cnn_best.pt
+│   │   └── unet_best.pt
+│   ├── pilot
+│   │   ├── photo_log.csv
+│   │   ├── pilot_responses.csv
+│   │   └── pilot_slide9.png
+│   ├── results
+│   │   ├── .gitkeep
+│   │   ├── demo_lowland_paddy_20261117T090548Z.json
+│   │   ├── demo_lowland_paddy_20261117T090548Z_map.npy
+│   │   ├── demo_lowland_paddy_20261117T090548Z_map.png
+│   │   ├── demo_lowland_paddy_20261117T090548Z_severity.png
+│   │   ├── demo_lowland_paddy_20261117T090746Z.json
+│   │   ├── demo_lowland_paddy_20261117T090746Z_map.npy
+│   │   ├── demo_lowland_paddy_20261117T090746Z_map.png
+│   │   ├── demo_lowland_paddy_20261117T090746Z_severity.png
+│   │   ├── demo_lowland_paddy_20261117T090836Z.json
+│   │   ├── demo_lowland_paddy_20261117T090836Z_map.npy
+│   │   ├── demo_lowland_paddy_20261117T090836Z_map.png
+│   │   ├── demo_lowland_paddy_20261117T090836Z_severity.png
+│   │   ├── run_log.jsonl
+│   │   ├── synthetic_test_20261117T064655Z.json
+│   │   ├── synthetic_test_20261117T065034Z.json
+│   │   └── waterlogging_report.md
+│   └── scenarios.json
+├── deploy
+│   └── HOSTING.md
+├── docs
+│   ├── FIELDWORK_KIT.md
+│   ├── PAPER_DRAFT.md
+│   ├── PPT_CONTENT_FILLED.md
+│   ├── README.md
+│   ├── RESEARCH_METHODOLOGY.md
+│   └── WHAT_AND_WHY.md
+├── scripts
+│   ├── evaluate.py
+│   ├── export_static.py
+│   ├── pilot_analysis.py
+│   ├── pilot_slide_chart.py
+│   ├── run_demo.py
+│   └── train.py
+├── site
+│   ├── assets
+│   │   ├── demo_lowland_paddy_20261117T090836Z_map.png
+│   │   └── demo_lowland_paddy_20261117T090836Z_severity.png
+│   ├── .nojekyll
+│   ├── index.html
+│   └── README.md
+├── tests
+│   ├── test_band_selection.py
+│   ├── test_dataset.py
+│   ├── test_evaluator.py
+│   ├── test_mapper.py
+│   ├── test_models.py
+│   └── test_preprocessing.py
+├── ui
+│   └── app.py
+├── .dockerignore
+├── .gitignore
+├── config.py
+├── Dockerfile
+├── Dockerfile.research
+├── IDEATHON_2026_PROPOSAL.md
+├── PROJECT PROPOSAL SYNERGY 2026.md
+├── PROJECT_EXPLANATION.txt
+├── pyproject.toml
+├── README.md
+├── requirements-web.txt
+├── test_pipeline.py
+├── tree.py
+└── wsgi.py
