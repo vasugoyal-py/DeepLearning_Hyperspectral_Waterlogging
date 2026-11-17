@@ -252,19 +252,50 @@ def run_pipeline(
     LOGGER.info("[%s] Stage 6/6: mapping", scenario_id)
     t0 = time.perf_counter()
     map_result = None
-    unet_preds_np = None
+    map_artifacts: dict[str, str] = {}
     if unet_result is not None:
-        # Build a spatial map from the test-patch predictions as a placeholder.
-        # Full-scene inference slides the trained U-Net across the image.
-        unet_preds_np = unet_preds if "unet_preds" in locals() else None
-        if unet_preds_np is not None and unet_preds_np.size > 0:
-            side = int(np.sqrt(unet_preds_np.size))
-            if side * side == unet_preds_np.size:
-                map_result = mapper.generate_maps(
-                    unet_preds_np.reshape(side, side)
+        # Full-scene inference: slide the trained U-Net over the whole
+        # band-selected cube and average overlapping class probabilities.
+        unet = build_unet(in_channels=n_bands)
+        state = torch.load(unet_result.checkpoint_path, map_location=device)
+        unet.load_state_dict(state["model_state_dict"])
+        unet.to(device)
+
+        inference_cube = band_sel_cube.astype(np.float32)
+        # Min-max normalise per band, matching the training normalisation
+        mn = inference_cube.min(axis=(1, 2), keepdims=True)
+        mx = inference_cube.max(axis=(1, 2), keepdims=True)
+        inference_cube = (inference_cube - mn) / (mx - mn + 1e-8)
+
+        scene_pred, scene_prob = mapper.sliding_window_predict(
+            unet,
+            inference_cube,
+            patch_size=patch_size or config.PATCH_SIZE,
+            stride=stride or max(1, (patch_size or config.PATCH_SIZE) // 2),
+            num_classes=config.UNET_NUM_CLASSES,
+            device=device,
+        )
+        map_result = mapper.generate_maps(scene_pred)
+
+        if save:
+            try:
+                config.RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+                map_png = str(config.RESULTS_DIR / f"{run_id}_map.png")
+                sev_png = str(config.RESULTS_DIR / f"{run_id}_severity.png")
+                map_artifacts["class_map_png"] = mapper.save_class_map_png(
+                    scene_pred, map_png
                 )
-            else:
-                map_result = mapper.generate_maps(unet_preds_np.reshape(1, -1))
+                map_artifacts["severity_png"] = mapper.save_severity_png(
+                    scene_prob[0] + scene_prob[2], sev_png
+                )
+                npy_path = str(config.RESULTS_DIR / f"{run_id}_map.npy")
+                np.save(npy_path, scene_pred)
+                map_artifacts["class_map_npy"] = npy_path
+                map_result.output_path = map_artifacts["class_map_png"]
+            except Exception as error:  # noqa: BLE001
+                LOGGER.warning("Could not persist map artefacts: %s", error)
+                warnings.append(f"Map artefacts could not be saved: {error}")
+
     timings["stage6_mapping"] = round(time.perf_counter() - t0, 2)
 
     # ------------------------------------------------------------------
@@ -334,6 +365,9 @@ def run_pipeline(
             "waterlogged_area_ha": map_result.waterlogged_area_ha if map_result else None,
             "total_area_ha": map_result.total_area_ha if map_result else None,
             "waterlogged_fraction": map_result.waterlogged_fraction if map_result else None,
+            "class_counts": map_result.class_counts if map_result else None,
+            "class_areas_ha": map_result.class_areas_ha if map_result else None,
+            "artifacts": map_artifacts,
         } if map_result else None,
         "provenance": provenance,
         "processing_seconds": processing_seconds,

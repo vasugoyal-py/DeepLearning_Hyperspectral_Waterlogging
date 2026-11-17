@@ -27,12 +27,12 @@
 |---|---|
 | — | Researchers / Students |
 | 1 | Introduction |
-| 2 | Literature Review (30 references, ≥5 post-2015, no Wikipedia) |
+| 2 | Literature Review (29 references, ≥5 post-2015, no Wikipedia) |
 | 3 | Research Gap |
 | 4 | Objectives |
 | 5 | Research Methodology |
 | 6 | Proposed Hypothesis |
-| 7 | Pilot Study (Fieldwork) — questionnaire and results, n = 18 |
+| 7 | Pilot Study (Fieldwork) — instrument, secondary evidence and collection plan |
 | 8 | Proposed Contribution and SDGs |
 | 9 | Limitations (Tentative) |
 | 10 | References (APA 7th Edition) |
@@ -205,6 +205,29 @@ SAR-based flood mapping (Kuenzer et al., 2013) and optical water indices (Gao, 1
 | Mapping & UI | GeoPandas/rasterio for GeoTIFF; Flask + Leaflet decision-support web interface |
 | Survey instrument | Structured questionnaire (Section 7) + semi-structured farmer interviews |
 
+## 5.6 Implementation Status (proof of concept)
+
+The software described in this methodology has been **built and validated
+end-to-end on simulated data**. This is stated explicitly so that no result in
+this proposal or the accompanying presentation can be mistaken for a field
+measurement.
+
+| Item | Status |
+|---|---|
+| Six-stage pipeline (preprocessing → band selection → dataset → CNN + U-Net → evaluation → mapping) | Implemented and running end-to-end |
+| Web decision-support dashboard | Implemented; displays metrics, class map, severity map, per-class areas and a report export |
+| Automated test suite | 16 tests passing |
+| Demonstration metrics quoted in the presentation | **Simulated 5-class hyperspectral scene**, not a drone or satellite survey |
+| Real hyperspectral cubes with field labels | **Not yet acquired** — next step is PRISMA/EnMAP or UAV cubes paired with GPS ground truth |
+| Primary farmer survey (n ≥ 15) | **Not yet collected** — instrument and kit prepared (Section 7, `docs/FIELDWORK_KIT.md`) |
+| Geotagged field photographs | **Not yet captured** — shot list and protocol in Section 7.7 |
+
+**Stated position for the presentation:** *"We built and validated the complete
+six-stage DeepWaterLog pipeline and web dashboard as a working proof-of-concept
+on simulated five-class hyperspectral data; the next step is ingesting real
+PRISMA/EnMAP satellite or UAV hyperspectral cubes paired with field GPS
+ground-truth."* This sentence is accurate as written and should be used verbatim.
+
 ## 5.6 Indicative Timeline
 
 | Phase | Activity | Duration |
@@ -271,58 +294,96 @@ A 50–100 hectare agricultural block in a waterlogging-prone region of Punjab o
 
 *Additional basic (non-unique) questions:* age, education, farm size, irrigation source, and years of farming experience.
 
-## 7.5 Pilot Study Results (n = 18 respondents, 4 plots)
+## 7.5 Pilot Study Status
 
-The pilot was administered to **18 farmers** across four waterlogging-prone plots
-(two paddy, one wheat, one mixed-vegetable) in the Rohtak–Jind belt of Haryana.
-All 18 responses were complete and usable. Values in the table are coded
-responses to the ten questions above.
+> ### Data status — read before presenting
+>
+> **No primary survey has been conducted yet.** The rows in §7.5.3 are an
+> **illustrative template** showing the coded format the questionnaire produces
+> and the analysis we will run on it. They are **not field data**, **not
+> findings**, and must not be reported as either.
+>
+> Before this section is shown to judges or written into the manuscript, replace
+> the template rows with real responses collected using
+> [`docs/FIELDWORK_KIT.md`](docs/FIELDWORK_KIT.md). That kit contains the
+> ready-to-send Google Form, the recruitment message, the consent line, the
+> coding sheet and the photo protocol.
+
+### 7.5.1 What is defensible today: secondary evidence
+
+The pilot's background assumptions come from published sources rather than from
+our own fieldwork. Every claim below is citable and verifiable.
+
+| Claim used in this proposal | Supporting source | Why it matters here |
+|---|---|---|
+| Extreme-rainfall events are intensifying, raising the frequency of soil-saturation episodes | IPCC (2022) | Frames waterlogging as a growing, climate-linked risk rather than a one-off event |
+| Crop water status is detectable from reflectance in the 950–970 nm region | Peñuelas et al. (1993); Sims & Gamon (2003) | Justifies the specific spectral bands the pipeline selects |
+| Deep learning consistently outperforms classical classifiers on hyperspectral data | Audebert et al. (2019); Zhang et al. (2016) | Justifies CNN/U-Net over vegetation-index thresholds |
+| Systematic reviews report few field-validated, end-to-end agricultural deep-learning pipelines | Kamilaris & Prenafeta-Boldú (2018); Weiss et al. (2020) | This is the research gap the project targets |
+| Adoption of precision-agriculture technology among smallholders remains limited by cost and information access | Sishodia et al. (2020); Liakos et al. (2018) | Motivates a low-cost, phone-delivered output |
+| Agrifood systems face rising exposure to climate shocks | FAO (2021); World Bank (2016) | Establishes policy relevance |
+
+These are **secondary sources**. They strengthen the justification for the study
+but do **not** substitute for the primary survey required by the submission
+template.
+
+### 7.5.2 The instrument
+
+The 10 unique questions in §7.4, preceded by 5 demographic items (age, education,
+farm size, irrigation source, years of farming), form the final instrument.
+A form-ready version, recruitment message, consent statement and coding sheet
+are provided in [`docs/FIELDWORK_KIT.md`](docs/FIELDWORK_KIT.md).
+
+### 7.5.3 Illustrative response template (EXAMPLE ROWS — NOT COLLECTED)
+
+The rows below are prefixed **EX** so they cannot be mistaken for real
+respondents. They exist only to show the coded output format.
 
 | Resp. | Crop | Waterlogging events (5 yr) | Most affected zone | Saturation days | Yield loss (%) | Q6 Detect method | Q7 Used app/drone | Q8 Map helpful | Q9 Main obstacle | Q10 Will share |
 |---|---|---|---|---|---|---|---|---|---|---|
-| R1 | Paddy | 4 | Low-lying | 5–7 | 30 | No | No | Yes | Cost | Yes |
-| R2 | Paddy | 5 | Near canal | 7–10 | 40 | No | No | Yes | Cost | Yes |
-| R3 | Paddy | 3 | Low-lying | 3–5 | 20 | No | No | Yes | Labour | Yes |
-| R4 | Paddy | 4 | Centre | 5–7 | 25 | Visual only | No | Yes | Information | Yes |
-| R5 | Paddy | 6 | Near canal | >10 | 50 | No | No | Yes | Cost | No |
-| R6 | Paddy | 2 | Edges | 3–5 | 15 | No | No | Maybe | Information | Yes |
-| R7 | Wheat | 3 | Low-lying | 3–5 | 20 | No | No | Yes | Cost | Yes |
-| R8 | Wheat | 2 | Low-lying | 1–3 | 10 | Visual only | No | Maybe | Land tenure | Yes |
-| R9 | Wheat | 4 | Centre | 5–7 | 30 | No | No | Yes | Labour | Yes |
-| R10 | Wheat | 1 | Edges | 1–3 | 10 | No | Yes | Yes | Information | Yes |
-| R11 | Wheat | 3 | Near canal | 3–5 | 25 | No | No | Yes | Cost | Yes |
-| R12 | Mixed vegetables | 5 | Low-lying | 5–7 | 45 | No | No | Yes | Cost | Yes |
-| R13 | Mixed vegetables | 4 | Centre | 5–7 | 35 | No | No | Yes | Labour | No |
-| R14 | Mixed vegetables | 3 | Low-lying | 3–5 | 25 | No | No | Maybe | Information | Yes |
-| R15 | Mixed vegetables | 6 | Low-lying | >10 | 55 | Visual only | No | Yes | Cost | Yes |
-| R16 | Mixed vegetables | 2 | Edges | 1–3 | 15 | No | No | Maybe | Information | Yes |
-| R17 | Paddy | 4 | Near canal | 5–7 | 30 | No | No | Yes | Cost | Yes |
-| R18 | Wheat | 3 | Low-lying | 3–5 | 20 | No | Yes | Yes | Labour | Yes |
+| EX1 | Paddy | 4 | Low-lying | 5–7 | 30 | No | No | Yes | Cost | Yes |
+| EX2 | Paddy | 5 | Near canal | 7–10 | 40 | No | No | Yes | Cost | Yes |
+| EX3 | Paddy | 3 | Low-lying | 3–5 | 20 | No | No | Yes | Labour | Yes |
+| EX4 | Paddy | 4 | Centre | 5–7 | 25 | Visual only | No | Yes | Information | Yes |
+| EX5 | Paddy | 6 | Near canal | >10 | 50 | No | No | Yes | Cost | No |
+| EX6 | Paddy | 2 | Edges | 3–5 | 15 | No | No | Maybe | Information | Yes |
+| EX7 | Wheat | 3 | Low-lying | 3–5 | 20 | No | No | Yes | Cost | Yes |
+| EX8 | Wheat | 2 | Low-lying | 1–3 | 10 | Visual only | No | Maybe | Land tenure | Yes |
+| EX9 | Wheat | 4 | Centre | 5–7 | 30 | No | No | Yes | Labour | Yes |
+| EX10 | Wheat | 1 | Edges | 1–3 | 10 | No | No | Yes | Information | Yes |
+| EX11 | Wheat | 3 | Near canal | 3–5 | 25 | No | No | Yes | Cost | Yes |
+| EX12 | Mixed vegetables | 5 | Low-lying | 5–7 | 45 | No | No | Yes | Cost | Yes |
+| EX13 | Mixed vegetables | 4 | Centre | 5–7 | 35 | No | No | Yes | Labour | No |
+| EX14 | Mixed vegetables | 3 | Low-lying | 3–5 | 25 | No | No | Maybe | Information | Yes |
+| EX15 | Mixed vegetables | 6 | Low-lying | >10 | 55 | Visual only | No | Yes | Cost | Yes |
+| EX16 | Mixed vegetables | 2 | Edges | 1–3 | 15 | No | No | Maybe | Information | Yes |
+| EX17 | Paddy | 4 | Near canal | 5–7 | 30 | No | No | Yes | Cost | Yes |
+| EX18 | Wheat | 3 | Low-lying | 3–5 | 20 | No | No | Yes | Labour | Yes |
 
-### Summary of pilot findings
+### 7.5.4 Analysis to be run on the real responses
 
-| Indicator | Result |
-|---|---|
-| Respondents | 18 (100% completion) |
-| Mean waterlogging events in 5 years | 3.6 (range 1–6) |
-| Respondents reporting ≥4 events | 8 of 18 (44%) |
-| Most frequently affected zone | Low-lying areas (9 of 18, 50%) |
-| Median saturation duration | 3–5 days (7 of 18); up to >10 days in 2 plots |
-| Mean self-reported yield loss | 27.5% (range 10–55%) |
-| Currently use any pre-symptom detection method | 3 of 18 (17%), all visual scouting only |
-| Have used an app/drone/satellite service | 2 of 18 (11%) |
-| Would use a field-scale waterlogging map | Yes 14 (78%), Maybe 4 (22%), No 0 |
-| Main obstacle to drainage improvement | Cost 9 (50%), Labour 4 (22%), Information 4 (22%), Land tenure 1 (6%) |
-| Willing to share photos/coordinates | 15 of 18 (83%) |
+Once responses arrive, the following table is completed and becomes the pilot
+results table in the presentation. No value is reported until it is computed
+from collected data.
 
-**Interpretation.** The pilot confirms the two assumptions behind the proposal:
-(1) waterlogging recurs frequently and causes large self-reported yield loss, and
-(2) farmers currently have almost no pre-symptom detection capability — only 17%
-use any method, and that method is unaided visual inspection. Demand for a
-field-scale map is near-universal (78% "Yes"), while cost is the dominant
-barrier to drainage investment. This supports the research gap and justifies the
-deep-learning mapping approach, whose output is designed to be low-cost and
-phone-deliverable.
+| Indicator | How it is computed | Direction to be tested |
+|---|---|---|
+| Respondents | Count of complete, consented forms | ≥ 15 |
+| Mean waterlogging events in 5 years | Mean of Q2 | Above 2 |
+| Recurrence | Share reporting ≥ 4 events in Q2 | Substantial minority or more |
+| Dominant affected zone | Mode of Q3 | Low-lying areas |
+| Saturation duration | Median of Q4 bands | 3–7 days |
+| Mean self-reported yield loss | Mean of Q5 | Materially above zero |
+| Existing detection capability | Share answering "Yes" to Q6 | Low, and visual scouting only |
+| Technology exposure | Share answering "Yes" to Q7 | Low |
+| Demand for a field-scale map | Share answering "Yes" to Q8 | High |
+| Dominant barrier to drainage | Mode of Q9 | Cost |
+| Willingness to share data | Share answering "Yes" to Q10 | Sufficient for ground-truthing |
+
+**Interpretation is deferred.** The two assumptions the proposal rests on — that
+waterlogging recurs often enough to matter, and that farmers currently have
+little pre-symptom detection capability — are hypotheses to be tested by the
+survey, not results already obtained.
 
 ## 7.6 Expected Pilot Outcome
 
@@ -330,12 +391,37 @@ A labelled dataset of hyperspectral patches with field-validated waterlogging cl
 
 ## 7.7 Field Survey Photographs (4 geotagged)
 
-> *Insert four geotagged field-survey photographs here (to be captured during the pilot):*
->
-> - **Photo 1:** Severely waterlogged paddy plot — GPS: `[lat, lon]`, date: `[YYYY-MM-DD]`
-> - **Photo 2:** Mildly waterlogged wheat field with visible chlorosis — GPS: `[lat, lon]`, date: `[YYYY-MM-DD]`
-> - **Photo 3:** Healthy crop plot used as a control — GPS: `[lat, lon]`, date: `[YYYY-MM-DD]`
-> - **Photo 4:** Farmer interview / soil-moisture sampling at a geotagged point — GPS: `[lat, lon]`, date: `[YYYY-MM-DD]`
+**Status: not captured.** No GPS coordinates are recorded here because none have
+been collected. The four frames below are the required shot list; the table is
+filled in as each photograph is taken. Do not insert stock imagery.
+
+| # | Required subject | Latitude | Longitude | Date | Time | App / device | File name | Notes |
+|---|---|---|---|---|---|---|---|---|
+| 1 | Severely waterlogged plot — standing water or fully saturated soil | — | — | — | — | — | — | |
+| 2 | Mildly waterlogged field with visible chlorosis | — | — | — | — | — | — | |
+| 3 | Healthy crop plot used as a control | — | — | — | — | — | — | |
+| 4 | Farmer interview or soil-moisture sampling at a geotagged point | — | — | — | — | — | — | |
+
+### Capture rules
+
+1. Use **GPS Map Camera** (free, Android/iOS) or any camera that writes GPS into
+   EXIF. Wait for a location fix before the first shot.
+2. Stand at the plot edge and photograph **into** the field, so bare soil or
+   standing water is visible — not just the horizon or the sky.
+3. Take one wide frame and one close-up per subject, then keep the better pair.
+4. Write the same coordinates into the questionnaire form for that respondent.
+5. Export the originals; do not send them through WhatsApp, which strips EXIF.
+6. **Never edit or re-add a geotag.** A judge checking the file properties must
+   see coordinates that match the stated village.
+
+### Verification before submission
+
+- Open the file properties (or the GPS Map Camera stamp) and confirm
+  `GPSLatitude` / `GPSLongitude` are present.
+- Confirm all four coordinates fall inside the declared study block.
+- Confirm the date on the photo matches the date the questionnaire was filled.
+- Rename files as `WL_PHOTO_<n>_<village>_<YYYYMMDD>.jpg` and keep them in
+  `data/pilot/photos/`.
 
 ### GD GOENKA UNIVERSITY
 ### AVISHKAR CENTER OF INNOVATION AND ENTREPRENEURSHIP
@@ -386,7 +472,7 @@ A labelled dataset of hyperspectral patches with field-validated waterlogging cl
 6. **Generalisation.** Models trained on one crop, region, or season may not transfer without retraining.
 7. **Atmospheric residuals.** Residual atmospheric effects may affect spectral consistency across acquisitions.
 8. **Scope of decision support.** The web interface is a screening tool, not a substitute for agronomic field inspection or engineering drainage design.
-9. **Survey limitations.** Pilot sample size (≥15) is small and purposive; findings are indicative, not statistically representative.
+9. **Survey status.** The primary pilot survey has not yet been administered at the time of writing; the instrument, analysis plan and fieldwork kit are complete, and the sample (≥15) will be purposive rather than statistically representative when collected.
 
 ### GD GOENKA UNIVERSITY
 ### AVISHKAR CENTER OF INNOVATION AND ENTREPRENEURSHIP

@@ -12,11 +12,13 @@ IoU, and produces georeferenced waterlogging maps for decision support.
 
 | Document | Purpose |
 |---|---|
-| [`../IDEATHON_2026_PROPOSAL.md`](../IDEATHON_2026_PROPOSAL.md) | IDEATHON 2026 submission format: introduction, literature review (30 APA references), research gap, objectives, methodology, hypothesis, pilot study with questionnaire, SDG contribution, limitations, references |
+| [`../IDEATHON_2026_PROPOSAL.md`](../IDEATHON_2026_PROPOSAL.md) | IDEATHON 2026 submission format: introduction, literature review (29 APA references), research gap, objectives, methodology, hypothesis, pilot instrument and collection plan, SDG contribution, limitations, references |
 | [`RESEARCH_METHODOLOGY.md`](RESEARCH_METHODOLOGY.md) | Full methodology note: literature review, gap, objectives, six-stage method, hypothesis, pilot fieldwork design, contribution, limitations and APA 7th references. Source for a thesis or manuscript Methods section |
 | [`PAPER_DRAFT.md`](PAPER_DRAFT.md) | Manuscript skeleton with abstract, introduction, literature review, methodology, pilot design, contribution, limitations and references. Experimental numbers are placeholders until models are trained on pilot data |
+| [`WHAT_AND_WHY.md`](WHAT_AND_WHY.md) | Plain-language explainer: the problem, why hyperspectral, why deep learning, the six stages, honest status, beneficiaries, SDGs, likely judge questions and a glossary |
+| [`FIELDWORK_KIT.md`](FIELDWORK_KIT.md) | One-day kit to collect the primary survey honestly: Google Form questions, consent text, WhatsApp recruitment message, photo protocol, Slide 9 template and the analysis command |
 | [`../README.md`](../README.md) | Project overview, quick start and repository layout |
-| [`../PROJECT_EXPLANATION.txt`](../PROJECT_EXPLANATION.txt) | Plain-language explanation for non-specialist readers |
+| [`../PROJECT_EXPLANATION.txt`](../PROJECT_EXPLANATION.txt) | Short plain-language summary for non-specialist readers |
 
 ## Pipeline at a glance
 
@@ -43,6 +45,9 @@ uv run --with pytest pytest
 # End-to-end health check on synthetic hyperspectral data
 uv run python test_pipeline.py --bands 30 --size 64 --patch-size 16 --stride 8
 
+# Fast demo run (~35 s) that fills the dashboard with metrics and maps
+uv run python scripts/run_demo.py --epochs 10 --size 96 --bands 40
+
 # Train CNN and U-Net models on a labelled .npz dataset
 uv run python scripts/train.py --data data/training/scene.npz --model both
 
@@ -52,6 +57,33 @@ uv run python scripts/evaluate.py --data data/testing/scene.npz --model both
 # Launch the decision-support UI
 uv run python ui/app.py
 ```
+
+The dashboard reads the newest record in `data/results/` and displays the
+metrics, the classified extent map, the waterlogging severity map, the per-class
+area breakdown and a Markdown report export.
+
+### Deploy the dashboard for free
+
+The dashboard needs only Flask, NumPy and Pillow — not PyTorch — so it deploys in
+about two minutes. See [`../deploy/HOSTING.md`](../deploy/HOSTING.md) for
+Hugging Face Spaces (no card required) and Render. Verify a deployment with:
+
+```bash
+curl https://<your-space>.hf.space/healthz
+```
+
+### Collect the pilot survey
+
+[`FIELDWORK_KIT.md`](FIELDWORK_KIT.md) contains the Google Form questions, consent
+text, recruitment message, photo protocol and the analysis command. Once real
+responses exist:
+
+```bash
+python scripts/pilot_analysis.py --csv data/pilot/pilot_responses.csv
+```
+
+It writes `pilot_summary.md` and `pilot_slide9.png`, and refuses to run below 15
+valid responses.
 
 ## Data layout
 

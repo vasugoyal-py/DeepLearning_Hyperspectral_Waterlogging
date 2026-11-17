@@ -9,15 +9,23 @@ crop-damage assessment.
 from __future__ import annotations
 
 import logging
+import os
 from dataclasses import dataclass, field
 from typing import Any
-
-import os
 
 import config
 import numpy as np
 
 LOGGER = logging.getLogger("deepwaterlog.mapper")
+
+# RGB palette for the five classes (matches config.CLASS_COLORS)
+DEFAULT_PALETTE: dict[int, tuple[int, int, int]] = {
+    0: (214, 40, 40),    # waterlogged_soil  - red
+    1: (64, 145, 108),   # healthy_crop      - green
+    2: (244, 162, 97),   # stressed_crop     - orange
+    3: (42, 111, 183),   # open_water        - blue
+    4: (150, 150, 150),  # non_agricultural  - grey
+}
 
 
 @dataclass
@@ -139,6 +147,190 @@ def save_geotiff(
     with rasterio.open(path, "w", **profile) as dst:
         dst.write(array.astype(profile["dtype"]), 1)
     LOGGER.info("GeoTIFF written to %s", path)
+    return path
+
+
+# ---------------------------------------------------------------------------
+# Full-scene inference
+# ---------------------------------------------------------------------------
+def sliding_window_predict(
+    model: Any,
+    cube: np.ndarray,
+    *,
+    patch_size: int | None = None,
+    stride: int | None = None,
+    num_classes: int | None = None,
+    device: str = "cpu",
+) -> tuple[np.ndarray, np.ndarray]:
+    """
+    Run a segmentation model over a whole hyperspectral cube using a sliding
+    window and average the per-pixel class probabilities across overlapping
+    windows.
+
+    Parameters
+    ----------
+    model : torch.nn.Module
+        Trained segmentation model producing logits (B, C, H, W).
+    cube : np.ndarray
+        Band-selected cube of shape (bands, height, width).
+    patch_size, stride : int, optional
+        Window size and step; default to config.PATCH_SIZE / config.STRIDE.
+    num_classes : int, optional
+        Number of classes; defaults to len(config.CLASSES).
+
+    Returns
+    -------
+    (predictions, probabilities)
+        predictions : (height, width) integer class ids
+        probabilities : (num_classes, height, width) mean class probabilities
+    """
+    import torch
+
+    ps = int(patch_size or config.PATCH_SIZE)
+    st = int(stride or max(1, ps // 2))
+    nc = int(num_classes or len(config.CLASSES))
+
+    cube = np.asarray(cube, dtype=np.float32)
+    bands, height, width = cube.shape
+
+    # Pad the scene so it is at least one full window in each direction
+    pad_h = max(0, ps - height)
+    pad_w = max(0, ps - width)
+    if pad_h or pad_w:
+        cube = np.pad(cube, ((0, 0), (0, pad_h), (0, pad_w)), mode="edge")
+
+    hh, ww = cube.shape[1], cube.shape[2]
+    prob_sum = np.zeros((nc, hh, ww), dtype=np.float32)
+    weight = np.zeros((hh, ww), dtype=np.float32)
+
+    # Gaussian window weighting: centre pixels count more than window edges,
+    # which removes the visible grid artefacts produced by uniform averaging.
+    axis = np.arange(ps) - (ps - 1) / 2.0
+    sigma = max(1.0, ps * 0.35)
+    gauss_1d = np.exp(-(axis ** 2) / (2.0 * sigma ** 2)).astype(np.float32)
+    window = np.outer(gauss_1d, gauss_1d)
+    window /= window.max()
+
+    tops = list(range(0, max(1, hh - ps + 1), st))
+    lefts = list(range(0, max(1, ww - ps + 1), st))
+
+    model.eval()
+    with torch.no_grad():
+        for top in tops:
+            for left in lefts:
+                patch = cube[:, top:top + ps, left:left + ps]
+                if patch.shape[1] != ps or patch.shape[2] != ps:
+                    continue
+                tensor = torch.from_numpy(patch[None]).float().to(device)
+                logits = model(tensor)
+                probs = torch.softmax(logits, dim=1)[0].cpu().numpy()
+                prob_sum[:, top:top + ps, left:left + ps] += probs * window[None]
+                weight[top:top + ps, left:left + ps] += window
+
+    weight[weight == 0] = 1.0
+    prob_mean = prob_sum / weight[None, :, :]
+    predictions = prob_mean.argmax(axis=0).astype(np.int64)
+
+    # Remove padding
+    predictions = predictions[:height, :width]
+    prob_mean = prob_mean[:, :height, :width]
+
+    LOGGER.info(
+        "Full-scene inference: %d windows over %dx%d pixels (%d bands).",
+        len(tops) * len(lefts), height, width, bands,
+    )
+    return predictions, prob_mean
+
+
+# ---------------------------------------------------------------------------
+# PNG rendering (no GDAL required)
+# ---------------------------------------------------------------------------
+def _class_map_to_rgb(
+    array: np.ndarray,
+    palette: dict[int, tuple[int, int, int]] | None = None,
+) -> np.ndarray:
+    """Map integer class ids to an (H, W, 3) uint8 RGB image."""
+    palette = palette or DEFAULT_PALETTE
+    array = np.asarray(array)
+    rgb = np.zeros((*array.shape, 3), dtype=np.uint8)
+    for class_id, colour in palette.items():
+        rgb[array == class_id] = colour
+    return rgb
+
+
+def save_class_map_png(
+    array: np.ndarray,
+    path: str,
+    *,
+    palette: dict[int, tuple[int, int, int]] | None = None,
+    scale: int = 8,
+) -> str:
+    """
+    Write an integer class map to a PNG using a fixed class palette.
+
+    ``scale`` enlarges each pixel block so small test scenes remain legible.
+    Requires Pillow; falls back to a .npy dump if Pillow is unavailable.
+    """
+    rgb = _class_map_to_rgb(array, palette)
+    directory = os.path.dirname(path)
+    if directory:
+        os.makedirs(directory, exist_ok=True)
+
+    try:
+        from PIL import Image
+    except ImportError:
+        fallback = path.replace(".png", ".npy")
+        np.save(fallback, array)
+        LOGGER.warning("Pillow not installed; saved class map to %s instead.", fallback)
+        return fallback
+
+    image = Image.fromarray(rgb, mode="RGB")
+    if scale and scale > 1:
+        image = image.resize(
+            (image.width * scale, image.height * scale), Image.NEAREST
+        )
+    image.save(path, format="PNG")
+    LOGGER.info("Class map PNG written to %s", path)
+    return path
+
+
+def save_severity_png(
+    severity: np.ndarray,
+    path: str,
+    *,
+    scale: int = 8,
+) -> str:
+    """
+    Write a 0-1 severity map to a PNG using a yellow-to-red ramp.
+
+    Requires Pillow. Returns the written path.
+    """
+    severity = np.clip(np.asarray(severity, dtype=np.float32), 0.0, 1.0)
+    directory = os.path.dirname(path)
+    if directory:
+        os.makedirs(directory, exist_ok=True)
+
+    try:
+        from PIL import Image
+    except ImportError:
+        fallback = path.replace(".png", ".npy")
+        np.save(fallback, severity)
+        LOGGER.warning("Pillow not installed; saved severity map to %s.", fallback)
+        return fallback
+
+    # Yellow (255, 237, 160) -> red (214, 40, 40)
+    r = (255 - (255 - 214) * severity).astype(np.uint8)
+    g = (237 - (237 - 40) * severity).astype(np.uint8)
+    b = (160 - (160 - 40) * severity).astype(np.uint8)
+    rgb = np.stack([r, g, b], axis=-1)
+
+    image = Image.fromarray(rgb, mode="RGB")
+    if scale and scale > 1:
+        image = image.resize(
+            (image.width * scale, image.height * scale), Image.NEAREST
+        )
+    image.save(path, format="PNG")
+    LOGGER.info("Severity PNG written to %s", path)
     return path
 
 

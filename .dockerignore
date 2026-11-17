@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.git/
+.gitignore
+old/
+tests/
+scripts/
+docs/
+data/hyperspectral/
+data/labels/
+data/boundaries/
+data/models/
+data/pilot/
+*.zip
+IDEATHON_2026_PROPOSAL.md

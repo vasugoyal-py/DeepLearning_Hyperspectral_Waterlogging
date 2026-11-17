@@ -1,0 +1,5 @@
+photo_id,subject,village,latitude,longitude,date,time,app,filename
+1,Severe waterlogging,,,,,GPS Map Camera,WL_PHOTO_1_village_YYYYMMDD.jpg
+2,Mild waterlogging / chlorosis,,,,,GPS Map Camera,WL_PHOTO_2_village_YYYYMMDD.jpg
+3,Healthy crop control,,,,,GPS Map Camera,WL_PHOTO_3_village_YYYYMMDD.jpg
+4,Farmer interview / soil sampling,,,,,GPS Map Camera,WL_PHOTO_4_village_YYYYMMDD.jpg

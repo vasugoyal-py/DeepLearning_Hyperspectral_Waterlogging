@@ -1,0 +1,8 @@
+# Minimal runtime for the hosted dashboard.
+# The dashboard reads saved results; it does not train models, so PyTorch is
+# deliberately excluded.
+flask>=3.0
+numpy>=1.26
+pillow>=10.0
+waitress>=3.0
+gunicorn>=21.2

@@ -1,0 +1,3 @@
+respondent_id,source,consent,age,education,farm_size_acres,crop,irrigation_source,years_farming,waterlog_events_5yr,affected_zone,saturation_days,yield_loss_pct,detect_method,used_app,map_helpful,main_obstacle,share_photos,village,date
+EX1,example-row,Yes,41,Secondary,3,Paddy,Tube well,18,4,Low-lying,5-7,30,No,No,Yes,Cost,Yes,EXAMPLE,YYYY-MM-DD
+EX2,example-row,Yes,55,Primary,6,Paddy,Both,30,5,Near canal,7-10,40,No,No,Yes,Cost,Yes,EXAMPLE,YYYY-MM-DD
